@@ -32,7 +32,11 @@ class AntiSpamPro extends PluginBase implements CommandExecutor, Listener {
 
     public function onChat(PlayerChatEvent $e) {
         if ($e->isCancelled() || ($player = $e->getPlayer())->isClosed() || $player->hasPermission("asp.bypass")) return;
-        if (isset($this->players[spl_object_hash($player)]) && (time() - $this->players[spl_object_hash($player)]["time"] <= intval($this->getConfig()->get("delay")))) {
+	    
+	$message = str_replace(' ', '', $e->getMessage());
+	$count = array_count_values(str_split($message));
+	    
+        if (max($count) >= $this->getConfig()->get("letterCount") || (isset($this->players[spl_object_hash($player)]) && (time() - $this->players[spl_object_hash($player)]["time"] <= intval($this->getConfig()->get("delay"))))) {
             $this->players[spl_object_hash($player)]["time"] = time();
             $this->players[spl_object_hash($player)]["warnings"] = $this->players[spl_object_hash($player)]["warnings"] + 1;
 
