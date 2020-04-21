@@ -36,7 +36,40 @@ class AntiSpamPro extends PluginBase implements CommandExecutor, Listener {
 	$message = str_replace(' ', '', $e->getMessage());
 	$count = array_count_values(str_split($message));
 	    
-        if (max($count) >= $this->getConfig()->get("letterCount") || (isset($this->players[spl_object_hash($player)]) && (time() - $this->players[spl_object_hash($player)]["time"] <= intval($this->getConfig()->get("delay"))))) {
+        if (max($count) >= $this->getConfig()->get("letterCount")) {
+            $this->players[spl_object_hash($player)]["time"] = time();
+            $this->players[spl_object_hash($player)]["warnings"] = $this->players[spl_object_hash($player)]["warnings"] + 1;
+
+            if ($this->players[spl_object_hash($player)]["warnings"] > $this->getConfig()->get("letterSpamWarnings")) {
+                $e->setCancelled();
+
+                switch (strtolower($this->getConfig()->get("letterSpamAction"))) {
+                    case "kick":
+						$player->kick($this->getConfig()->get("kickmessage"));
+                        break;
+
+                    case "ban":
+						$player->setBanned(true);
+                        break;
+
+                    case "banip":
+
+                        $this->getServer()->getIPBans()->addBan($player->getAddress(), $this->getConfig()->get("banmessage"), null, $player->getName());
+                        $this->getServer()->getNetwork()->blockAddress($player->getAddress(), -1);
+						$player->setBanned(true);
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+                return;
+            }
+			$player->sendMessage(TEXTFORMAT::RED . $this->getConfig()->get("message1"));
+			$player->sendMessage(TEXTFORMAT::GREEN . $this->getConfig()->get("message2"));
+            $e->setCancelled();
+        }elseif (isset($this->players[spl_object_hash($player)]) && (time() - $this->players[spl_object_hash($player)]["time"] <= intval($this->getConfig()->get("delay")))) {
             $this->players[spl_object_hash($player)]["time"] = time();
             $this->players[spl_object_hash($player)]["warnings"] = $this->players[spl_object_hash($player)]["warnings"] + 1;
 
