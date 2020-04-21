@@ -197,14 +197,14 @@ class AntiSpamPro extends PluginBase implements CommandExecutor, Listener {
 
     public function onPlayerCommand(PlayerCommandPreprocessEvent $event) {
 
-		if (!$this->getConfig()->get("anticommandspam") || $event->isCancelled() || $event->getPlayer()->isClosed()) return;
+	if ($event->isCancelled() || $event->getPlayer()->isClosed()) return;
         if (($sender = $event->getPlayer())->hasPermission("asp.bypass")) return;
         $message = $event->getMessage();
         if ($message{0} != "/") {
             return;
         }
 
-		if (isset($this->players[spl_object_hash($sender)]) && (time() - $this->players[spl_object_hash($sender)]["time"] <= intval($this->getConfig()->get("delay")))) {
+	if ((isset($this->players[spl_object_hash($sender)]) && (time() - $this->players[spl_object_hash($sender)]["time"] <= intval($this->getConfig()->get("delay")))) || !$this->getConfig()->get("anticommandspam")) {
             $this->players[spl_object_hash($sender)]["time"] = time();
             $this->players[spl_object_hash($sender)]["warnings"] = $this->players[spl_object_hash($sender)]["warnings"] + 1;
 
