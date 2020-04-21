@@ -7,11 +7,11 @@ delay: 2
 message1: "Please be polite, do not chat too fast"
 message2: "For help and chat join DISCORD at jdcraft.net/discord"
 action: "kick"
-wordSpamAction: "ban"
+letterSpamAction: "ban"
 kickmessage: "Server Closed"
 letterCount: 50
 warnings: 5
-wordSpamWarnings: 5
+letterSpamWarnings: 2
 setkickmessage: "Spammers will be kicked"
 setbanmessage: "Spammers will be banned"
 setbanipmessage: "Spammers will be IP banned"
