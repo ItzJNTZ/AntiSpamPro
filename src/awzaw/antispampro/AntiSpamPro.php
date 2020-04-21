@@ -31,20 +31,15 @@ class AntiSpamPro extends PluginBase implements CommandExecutor, Listener {
     }
 
     public function onChat(PlayerChatEvent $e) {
-	    $message = str_replace(' ', '', $e->getMessage());
-	$count = array_count_values(str_split($message));
-	    $player->sendMessage(TEXTFORMAT::RED . strval(max($count)));
- $player->sendMessage(TEXTFORMAT::RED . $this->getConfig()->get("letterCount"));
-	     $player->sendMessage(TEXTFORMAT::RED . strval(max($count) >= $this->getConfig()->get("letterCount")));
+$this->getLogger()->info(TEXTFORMAT::GREEN . "1");
 
         if ($e->isCancelled() || ($player = $e->getPlayer())->isClosed() || $player->hasPermission("asp.bypass")) return;
 	    
 	$message = str_replace(' ', '', $e->getMessage());
 	$count = array_count_values(str_split($message));
-	    $player->sendMessage(TEXTFORMAT::RED . strval(max($count)));
- $player->sendMessage(TEXTFORMAT::RED . $this->getConfig()->get("letterCount"));
-	     $player->sendMessage(TEXTFORMAT::RED . strval(max($count) >= $this->getConfig()->get("letterCount")));
+	    $this->getLogger()->info(TEXTFORMAT::GREEN . max($count));
         if (max($count) >= $this->getConfig()->get("letterCount")) {
+		$this->getLogger()->info(TEXTFORMAT::GREEN . "6");
             $this->players[spl_object_hash($player)]["time"] = time();
             $this->players[spl_object_hash($player)]["warnings"] = $this->players[spl_object_hash($player)]["warnings"] + 1;
 
@@ -78,7 +73,8 @@ class AntiSpamPro extends PluginBase implements CommandExecutor, Listener {
 			$player->sendMessage(TEXTFORMAT::GREEN . $this->getConfig()->get("message2"));
             $e->setCancelled();
         }elseif (isset($this->players[spl_object_hash($player)]) && (time() - $this->players[spl_object_hash($player)]["time"] <= intval($this->getConfig()->get("delay")))) {
-            $this->players[spl_object_hash($player)]["time"] = time();
+            $this->getLogger()->info(TEXTFORMAT::GREEN . "5");
+		$this->players[spl_object_hash($player)]["time"] = time();
             $this->players[spl_object_hash($player)]["warnings"] = $this->players[spl_object_hash($player)]["warnings"] + 1;
 
             if ($this->players[spl_object_hash($player)]["warnings"] === $this->getConfig()->get("warnings")) {
@@ -116,6 +112,7 @@ class AntiSpamPro extends PluginBase implements CommandExecutor, Listener {
 			$player->sendMessage(TEXTFORMAT::GREEN . $this->getConfig()->get("message2"));
             $e->setCancelled();
         } else {
+		$this->getLogger()->info(TEXTFORMAT::GREEN . "4");
             $this->players[spl_object_hash($player)] = array("time" => time(), "warnings" => 0);
             if ($this->getConfig()->get("antiswearwords") && $this->profanityfilter->hasProfanity($e->getMessage())) {
 				$player->sendMessage(TEXTFORMAT::RED . $this->getConfig()->get("swearmessage"));
@@ -201,12 +198,14 @@ class AntiSpamPro extends PluginBase implements CommandExecutor, Listener {
      */
 
     public function onPlayerCommand(PlayerCommandPreprocessEvent $event) {
+	    $this->getLogger()->info(TEXTFORMAT::GREEN . "2");
         if ($event->isCancelled() || $event->getPlayer()->isClosed()) return;
         if (($sender = $event->getPlayer())->hasPermission("asp.bypass")) return;
         $message = $event->getMessage();
         if ($message{0} != "/") {
             return;
         }
+	    $this->getLogger()->info(TEXTFORMAT::GREEN . "3");
         if (isset($this->players[spl_object_hash($sender)]) && (time() - $this->players[spl_object_hash($sender)]["time"] <= intval($this->getConfig()->get("delay")))) {
             $this->players[spl_object_hash($sender)]["time"] = time();
             $this->players[spl_object_hash($sender)]["warnings"] = $this->players[spl_object_hash($sender)]["warnings"] + 1;
