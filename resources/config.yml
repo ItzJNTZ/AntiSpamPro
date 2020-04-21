@@ -9,7 +9,7 @@ message2: "For help and chat join DISCORD at jdcraft.net/discord"
 action: "kick"
 letterSpamAction: "ban"
 kickmessage: "Server Closed"
-letterCount: 50
+letterCount: 30
 warnings: 5
 letterSpamWarnings: 2
 setkickmessage: "Spammers will be kicked"
@@ -27,3 +27,4 @@ lastwarning: "CAREFUL... LAST WARNING"
 swearmessage: "No Swear Words Allowed"
 antiswearwords: true
 antirudenames: true
+anticommandspam: true
