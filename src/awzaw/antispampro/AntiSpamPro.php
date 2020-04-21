@@ -35,7 +35,9 @@ class AntiSpamPro extends PluginBase implements CommandExecutor, Listener {
 	    
 	$message = str_replace(' ', '', $e->getMessage());
 	$count = array_count_values(str_split($message));
-	    
+	    $player->sendMessage(TEXTFORMAT::RED . max($count));
+ $player->sendMessage(TEXTFORMAT::RED . $this->getConfig()->get("letterCount"));
+	     $player->sendMessage(TEXTFORMAT::RED . max($count) >= $this->getConfig()->get("letterCount"));
         if (max($count) >= $this->getConfig()->get("letterCount")) {
             $this->players[spl_object_hash($player)]["time"] = time();
             $this->players[spl_object_hash($player)]["warnings"] = $this->players[spl_object_hash($player)]["warnings"] + 1;
